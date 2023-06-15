@@ -9,7 +9,7 @@ getCategories()
 
 // Event Listeners
 cuisineSelect.addEventListener("change", getRecipesByCuisine)
-// categorySelect.addEventListener("change", getRecipesByCategory)
+categorySelect.addEventListener("change", getRecipesByCategory)
 
 // Dropdown Functions
 function getCuisines() {
@@ -17,7 +17,6 @@ function getCuisines() {
     .then(r => r.json())
     .then(cuisines => renderCuisineOptions(cuisines.meals))
     .catch(error => alert(error))
-    
 }
 
 function getCategories(){
@@ -25,7 +24,6 @@ function getCategories(){
     .then(r => r.json())
     .then(categories => renderCategoryOptions(categories.meals))
     .catch(error => alert(error))
-    
 }
 
 function renderCuisineOptions(cuisines) {
@@ -40,7 +38,7 @@ function renderCuisineOptions(cuisines) {
 function renderCategoryOptions(categories) {
     categories.forEach(category => {
         const option = document.createElement("option")
-        option.value = category.strArea
+        option.value = category.strCategory
         option.textContent = category.strCategory
         categorySelect.append(option)
     });
@@ -57,20 +55,29 @@ function getRecipesByCuisine(e) {
     .catch(error => alert(error))
 }
 
+function getRecipesByCategory(e) {
+    const category = e.target.value
+
+    fetch(`https://www.themealdb.com/api/json/v1/1/filter.php?c=${category}`)
+        .then(r => r.json())
+        .then(recipes => renderAllRecipes(recipes.meals))
+        .catch(error => alert(error))
+}
+
 function renderAllRecipes(recipes) {
     recipeContainer.replaceChildren()
     recipes.forEach(recipe => {
-    renderRecipeCard(recipe)
-    })
+        renderRecipeCard(recipe)
+    }) 
     cuisineSelect.value = ""
     categorySelect.value = ""
 }
 
 function renderRecipeCard(recipe) {
     const {
-        idMeals: recipeId,
-         strMeal: recipeName,
-          strMealThumb: recipeImage,
+        idMeal: recipeId,
+        strMeal: recipeName,
+        strMealThumb: recipeImage, 
     } = recipe
 
     console.log(recipe)
